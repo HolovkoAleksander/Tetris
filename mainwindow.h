@@ -8,10 +8,24 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 typedef enum{
     ANGLE_0=0,
-    ANGLE_90,
-    ANGLE_180,
-    ANGLE_270
+    ANGLE_90=1,
+    ANGLE_180=2,
+    ANGLE_270=3
 }angle_t;
+typedef enum{
+    RELASE=0,
+    LEFT_st,
+    RIGHT_st,
+    DOWN_st,
+    ENTER_st
+}state_t;
+#define TOP 20
+#define LEFT 20
+#define WIDHT 300
+#define HEIGHT 500
+#define SIZE 20
+#define SIZE_AREA_X ((HEIGHT-LEFT)/SIZE)
+#define SIZE_AREA_Y ((WIDHT-TOP)/SIZE)
 
 #define T_COLOR Qt::red
 #define Q_COLOR Qt::green
@@ -30,7 +44,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private:
-    void drawIMG(QPainter *qp);
+    void currentBlock(QPainter *qp);
 
     void drawPointBW(QPainter *qp,int x, int y, uint8_t Color);
     void Square(QPainter *qp,int x, int y, Qt::GlobalColor Color);
@@ -47,5 +61,11 @@ protected:
     virtual void keyPressEvent( QKeyEvent * event);
 private:
     Ui::MainWindow *ui;
+    state_t key_state=RELASE;
+    uint8_t angle=ANGLE_0;
+    bool count=false;
+    uint16_t current_X=0;
+    uint16_t current_Y=0;
+    Qt::GlobalColor Area[SIZE_AREA_Y][SIZE_AREA_X]={{Qt::white},{Qt::white}};
 };
 #endif // MAINWINDOW_H

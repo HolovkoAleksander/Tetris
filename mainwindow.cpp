@@ -5,17 +5,8 @@
 #include <QKeyEvent>
 #include <QTimer>
 
-#define TOP 20
-#define LEFT 20
-#define WIDHT 300
-#define HEIGHT 500
-#define SIZE 20
-#define SIZE_AREA_X ((HEIGHT-LEFT)/SIZE)
-#define SIZE_AREA_Y ((WIDHT-TOP)/SIZE)
-bool count=false;
-uint16_t current_X=0;
-uint16_t current_Y=0;
-Qt::GlobalColor Area[SIZE_AREA_Y][SIZE_AREA_X]={Qt::white};
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -36,17 +27,35 @@ void MainWindow::paintEvent(QPaintEvent *e) {
     QPainter qp(this);
     if(count){
         count=false;
-        drawIMG(&qp);
+        currentBlock(&qp);
     }
 }
 
-void MainWindow::drawIMG(QPainter *qp) {
+void MainWindow::currentBlock(QPainter *qp) {
     qp->drawRect(TOP, LEFT, WIDHT, HEIGHT);
     //qp->setPen(QPen (Qt::red, 5, Qt::SolidLine));
     current_Y++;
-
-    T(qp,10, current_Y,ANGLE_0);
-
+    if (key_state!=RELASE){
+        switch (key_state){
+         case ENTER_st:
+            if(angle) angle--;
+            else angle=ANGLE_270;
+            break;
+        case RIGHT_st:
+           if(current_X<SIZE_AREA_X) current_X++;
+           break;
+        case LEFT_st:
+           if(current_X) current_X--;
+           break;
+        case DOWN_st:
+           current_Y=SIZE_AREA_Y;
+           break;
+        default:
+            break;
+        }
+        key_state=RELASE;
+    }
+    T(qp,current_X, current_Y,(angle_t)angle);
 
 
 }
@@ -83,26 +92,57 @@ void MainWindow::Square(QPainter *qp, int x, int y, Qt::GlobalColor Color)
 void MainWindow::keyPressEvent( QKeyEvent *event)
 {
     qDebug() << event->key() ;
-    if( event->key() == Qt::Key_A )
+    switch (event->key()){
+
+        case Qt::Key_Left:
+            key_state=LEFT_st;
+            break;
+        case Qt::Key_Right:
+            key_state=RIGHT_st;
+            break;
+        case Qt::Key_Down:
+            key_state=DOWN_st;
+            break;
+        case Qt::Key_Enter:
+            key_state=ENTER_st;
+            break;
+    }
+
+    if( event->key() == Qt::Key_Left )
     {
         // do your stuff here
     }
 }
 void MainWindow::T(QPainter *qp,int x, int y, angle_t rotate)
 {
+    if (x<1) x=1;
+    else if (x>(SIZE_AREA_X-1)) x=SIZE_AREA_X-1;
+    if (y>(SIZE_AREA_Y-1)) y=(SIZE_AREA_Y-1);
     switch (rotate){
         case ANGLE_0:
-        Square(qp,x-1,y,T_COLOR);
-        Square(qp,x,y,T_COLOR);
-        Square(qp,x+1,y,T_COLOR);
-        Square(qp,x,y-1,T_COLOR);
-        break;
+            Square(qp,x-1,y,T_COLOR);
+            Square(qp,x,y,T_COLOR);
+            Square(qp,x+1,y,T_COLOR);
+            Square(qp,x,y-1,T_COLOR);
+            break;
         case ANGLE_90:
-        break;
+            Square(qp,x-1,y+1,T_COLOR);
+            Square(qp,x-1,y,T_COLOR);
+            Square(qp,x-1,y-1,T_COLOR);
+            Square(qp,x,y,T_COLOR);
+            break;
         case ANGLE_180:
-        break;
+            Square(qp,x-1,y,T_COLOR);
+            Square(qp,x,y,T_COLOR);
+            Square(qp,x+1,y,T_COLOR);
+            Square(qp,x,y+1,T_COLOR);
+            break;
         case ANGLE_270:
-        break;
+            Square(qp,x+1,y+1,T_COLOR);
+            Square(qp,x+1,y,T_COLOR);
+            Square(qp,x+1,y-1,T_COLOR);
+            Square(qp,x,y,T_COLOR);
+            break;
 
     }
 }
