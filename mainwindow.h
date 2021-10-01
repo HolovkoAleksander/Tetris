@@ -23,9 +23,9 @@ typedef enum{
 #define LEFT 20
 #define WIDHT 300
 #define HEIGHT 500
-#define SIZE 20
-#define SIZE_AREA_X ((HEIGHT-LEFT)/SIZE)
-#define SIZE_AREA_Y ((WIDHT-TOP)/SIZE)
+#define SIZE 10
+#define SIZE_AREA_X ((WIDHT)/SIZE)
+#define SIZE_AREA_Y ((HEIGHT)/SIZE)
 
 #define T_COLOR Qt::red
 #define Q_COLOR Qt::green
@@ -48,13 +48,17 @@ private:
 
     void drawPointBW(QPainter *qp,int x, int y, uint8_t Color);
     void Square(QPainter *qp,int x, int y, Qt::GlobalColor Color);
-    void T (QPainter *qp,int x, int y, angle_t rotate);
-    void Q (QPainter *qp,int x, int y);
-    void I (QPainter *qp,int x, int y, angle_t rotate);
-    void Z (QPainter *qp,int x, int y, angle_t rotate);
-    void S (QPainter *qp,int x, int y, angle_t rotate);
-    void J (QPainter *qp,int x, int y, angle_t rotate);
-    void L (QPainter *qp,int x, int y, angle_t rotate);
+    void Square_without_margin(QPainter *qp,int x, int y, Qt::GlobalColor Color);
+    void Square_margin(QPainter *qp,int x, int y);
+    bool T (QPainter *qp,int x, int y, state_t key_state);
+    bool Q (QPainter *qp,int y, state_t key_state);
+    bool I (QPainter *qp,int y, state_t key_state);
+    bool Z (QPainter *qp,int y, state_t key_state);
+    bool S (QPainter *qp,int x, int y, state_t key_state);
+    bool J (QPainter *qp,int x, int y, state_t key_state);
+    bool L (QPainter *qp,int x, int y, state_t key_state);
+
+    bool checkArea(int x, int y);
 
 protected:
     virtual void paintEvent(QPaintEvent *e);
