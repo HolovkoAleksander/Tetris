@@ -65,7 +65,7 @@ void MainWindow::currentBlock(QPainter *qp) {
       current_Y=0;
     }
     key_state=RELASE;
-
+    update();
 }
 
 
@@ -161,6 +161,7 @@ bool MainWindow::Q(QPainter *qp, int y, state_t key_state)
         Area[y-1][x]=Q_COLOR;
         Area[y-1][x+1]=Q_COLOR;
         Area[y][x+1]=Q_COLOR;
+        x=SIZE_AREA_X/2;
         return true;
     }
     return false;
@@ -223,6 +224,7 @@ bool MainWindow::I(QPainter *qp, int y, state_t key_state)
                 Area[y][x+1]=I_COLOR;
                 Area[y][x]=I_COLOR;
                 Area[y][x-1]=I_COLOR;
+                x=SIZE_AREA_X/2;
                 return true;
             }
             break;
@@ -239,6 +241,7 @@ bool MainWindow::I(QPainter *qp, int y, state_t key_state)
                 Area[y-1][x]=I_COLOR;
                 Area[y][x]=I_COLOR;
                 Area[y+1][x]=I_COLOR;
+                x=SIZE_AREA_X/2;
                 return true;
             }
         break;
@@ -261,38 +264,39 @@ bool MainWindow::Z(QPainter *qp, int y, state_t key_state)
         default:
             break;
         }
-        case LEFT_st:
-            if (rotate==ANGLE_0){
-                if(x>1){
-                    if (Area[y][x-2]==Qt::white) x--;
-                }
-            }else{
-                if(x){
-                    if ((Area[y][x-1]==Qt::white)&&(Area[y-1][x-1]==Qt::white)&&
-                        (Area[y-2][x-1]==Qt::white)&&(Area[y+1][x-1]==Qt::white)) x--;
-                }
+        break;
+    case LEFT_st:
+        if (rotate==ANGLE_0){
+            if(x>2){
+                if ((Area[y][x-2]==Qt::white)&&(Area[y-1][x-1]==Qt::white)) x--;
             }
-            break;
-        case RIGHT_st:
-            if (rotate==ANGLE_0){
-                if(x<(SIZE_AREA_X-3))
-                   if (Area[y][x+3]==Qt::white) x++;
-            }else{
-                if(x<(SIZE_AREA_X-1))
-                    if ((Area[y][x+1]==Qt::white)&&(Area[y-1][x+1]==Qt::white)&&
-                        (Area[y-2][x+1]==Qt::white)&&(Area[y+1][x+1]==Qt::white)) x++;
+        }else{
+            if(x>1){
+                if ((Area[y][x-2]==Qt::white)&&(Area[y-1][x-2]==Qt::white)&&
+                    (Area[y+1][x-1]==Qt::white)) x--;
             }
-            break;
-        default:
-            break;
+        }
+        break;
+    case RIGHT_st:
+        if (rotate==ANGLE_0){
+            if(x<(SIZE_AREA_X-2))
+               if ((Area[y-1][x+1]==Qt::white)&&(Area[y-1][x+2]==Qt::white)) x++;
+        }else{
+            if(x<(SIZE_AREA_X-1))
+                if ((Area[y][x+1]==Qt::white)&&(Area[y+1][x+1]==Qt::white)&&
+                    (Area[y-1][x]==Qt::white)) x++;
+        }
+        break;
+    default:
+        break;
     }
-    if (x<1) x=1;
-    else if (x>(SIZE_AREA_X-3)) x=SIZE_AREA_X-3 ;
-    if (y>(SIZE_AREA_Y-2)) y=(SIZE_AREA_Y-2);
-    else if (y<2) y=2;
+
+
 
     switch (rotate){
         case ANGLE_0:
+            if (y>(SIZE_AREA_Y-1)) y=(SIZE_AREA_Y-1);
+            else if (y<2) y=2;
             Square(qp,x-1,y,Z_COLOR);
             Square(qp,x,y,Z_COLOR);       // 0
             Square(qp,x,y-1,Z_COLOR);     //00
@@ -306,15 +310,17 @@ bool MainWindow::Z(QPainter *qp, int y, state_t key_state)
                 Area[y][x]=Z_COLOR;
                 Area[y-1][x]=Z_COLOR;
                 Area[y-1][x+1]=Z_COLOR;
+                x=SIZE_AREA_X/2;
                 return true;
             }
             break;
         case ANGLE_180:
+            if (y>(SIZE_AREA_Y-1)) y=(SIZE_AREA_Y-1);
+            else if (y<2) y++;
             Square(qp,x,y,Z_COLOR);
             Square(qp,x,y+1,Z_COLOR);       // 0
             Square(qp,x-1,y,Z_COLOR);     //00
             Square(qp,x-1,y-1,Z_COLOR);
-            break;
             state |= checkArea (x-1,y);
             state |= checkArea (x,y);
             state |= checkArea (x,y+1);
@@ -324,8 +330,10 @@ bool MainWindow::Z(QPainter *qp, int y, state_t key_state)
                 Area[y][x]=Z_COLOR;
                 Area[y+1][x]=Z_COLOR;
                 Area[y-1][x-1]=Z_COLOR;
+                x=SIZE_AREA_X/2;
                 return true;
             }
+            break;
         default:
         break;
     }
@@ -520,7 +528,7 @@ void MainWindow::keyPressEvent( QKeyEvent *event)
         case Qt::Key_Down:
             key_state=DOWN_st;
             break;
-        case Qt::Key_Enter:
+        case Qt::Key_Space:
             key_state=ENTER_st;
             break;
     }
