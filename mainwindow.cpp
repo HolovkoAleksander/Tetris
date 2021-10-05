@@ -59,7 +59,7 @@ void MainWindow::currentBlock(QPainter *qp) {
         }
 
     }
-    state=Z(qp, current_Y,key_state);
+    state=J(qp, &current_Y,key_state);
     if (state){
       current_X= SIZE_AREA_X/2;
       current_Y=0;
@@ -283,15 +283,13 @@ bool MainWindow::Z(QPainter *qp, int y, state_t key_state)
                if ((Area[y-1][x+1]==Qt::white)&&(Area[y-1][x+2]==Qt::white)) x++;
         }else{
             if(x<(SIZE_AREA_X-1))
-                if ((Area[y][x+1]==Qt::white)&&(Area[y+1][x+1]==Qt::white)&&
-                    (Area[y-1][x]==Qt::white)) x++;
+                if ((Area[y][x+2]==Qt::white)&&(Area[y+1][x+2]==Qt::white)&&
+                    (Area[y-1][x+1]==Qt::white)) x++;
         }
         break;
     default:
         break;
     }
-
-
 
     switch (rotate){
         case ANGLE_0:
@@ -337,86 +335,240 @@ bool MainWindow::Z(QPainter *qp, int y, state_t key_state)
         default:
         break;
     }
+    return false;
 }
-bool MainWindow::S(QPainter *qp,int x, int y, state_t key_state)
+bool MainWindow::S(QPainter *qp,int y, state_t key_state)
 {
+    static int x=SIZE_AREA_X/2;
     static angle_t rotate=ANGLE_0;
-    if (key_state!=RELASE){
-        if (key_state==ENTER_st){
-            switch(rotate){
-                case ANGLE_0:  rotate=ANGLE_180;break;
-                case ANGLE_180:  rotate=ANGLE_0;break;
-            default:
-                break;
+    bool state=false;
+    switch (key_state)
+    {
+    case ENTER_st:
+        switch(rotate){
+            case ANGLE_0:  rotate=ANGLE_180;break;
+            case ANGLE_180:  rotate=ANGLE_0;break;
+        default:
+            break;
+        }
+        break;
+    case LEFT_st:
+        if (rotate==ANGLE_0){
+            if(x>2){
+                if ((Area[y-1][x-2]==Qt::white)&&(Area[y][x-1]==Qt::white)) x--;
+            }
+        }else{
+            if(x>1){
+                if ((Area[y][x-2]==Qt::white)&&(Area[y+1][x-2]==Qt::white)&&
+                    (Area[y-1][x-1]==Qt::white)) x--;
             }
         }
+        break;
+    case RIGHT_st:
+        if (rotate==ANGLE_0){
+            if(x<(SIZE_AREA_X-2))
+               if ((Area[y-1][x+1]==Qt::white)&&(Area[y][x+2]==Qt::white)) x++;
+        }else{
+            if(x<(SIZE_AREA_X-1))
+                if ((Area[y][x+1]==Qt::white)&&(Area[y-1][x+1]==Qt::white)&&
+                    (Area[y-1][x+1]==Qt::white)) x++;
+        }
+        break;
+    default:
+        break;
     }
-    if (x<1) x=1;
-    else if (x>(SIZE_AREA_X-3)) x=SIZE_AREA_X-3 ;
-    if (y>(SIZE_AREA_Y-2)) y=(SIZE_AREA_Y-2);
-    else if (y<2) y=2;
 
     switch (rotate){
         case ANGLE_0:
+            if (y>(SIZE_AREA_Y-1)) y=(SIZE_AREA_Y-1);
+            else if (y<2) y=2;
             Square(qp,x+1,y,S_COLOR);
             Square(qp,x,y,S_COLOR);       // 0
             Square(qp,x,y-1,S_COLOR);     //00
             Square(qp,x-1,y-1,S_COLOR);
+            state |= checkArea (x-1,y-1);
+            state |= checkArea (x,y);
+            state |= checkArea (x,y-1);
+            state |= checkArea (x+1,y);
+            if (state){
+                Area[y-1][x-1]=S_COLOR;
+                Area[y][x]=S_COLOR;
+                Area[y-1][x]=S_COLOR;
+                Area[y][x+1]=S_COLOR;
+                x=SIZE_AREA_X/2;
+                return true;
+            }
             break;
         case ANGLE_180:
+            if (y>(SIZE_AREA_Y-1)) y=(SIZE_AREA_Y-1);
+            else if (y<2) y++;
             Square(qp,x-1,y,S_COLOR);
             Square(qp,x-1,y+1,S_COLOR);       // 0
             Square(qp,x,y,S_COLOR);     //00
             Square(qp,x,y-1,S_COLOR);
+            state |= checkArea (x-1,y);
+            state |= checkArea (x,y);
+            state |= checkArea (x,y-1);
+            state |= checkArea (x-1,y+1);
+            if (state){
+                Area[y][x-1]=S_COLOR;
+                Area[y][x]=S_COLOR;
+                Area[y+1][x-1]=S_COLOR;
+                Area[y-1][x]=S_COLOR;
+                x=SIZE_AREA_X/2;
+                return true;
+            }
             break;
         default:
         break;
     }
+    return false;
 }
-bool MainWindow::J(QPainter *qp,int x, int y, state_t key_state)
+bool MainWindow::J(QPainter *qp,uint16_t *y, state_t key_state)
 {
+    static int x=SIZE_AREA_X/2;
     static angle_t rotate=ANGLE_0;
-    if (key_state!=RELASE){
-        if (key_state==ENTER_st){
-            switch(rotate){
-                case ANGLE_0:  rotate=ANGLE_90;break;
-                case ANGLE_90:  rotate=ANGLE_180;break;
-                case ANGLE_180:  rotate=ANGLE_270;break;
-                case ANGLE_270:  rotate=ANGLE_0;break;
-            }
-        }
-    }
+    bool state=false;
 
-    if (x<1) x=1;
-    else if (x>(SIZE_AREA_X-2)) x=SIZE_AREA_X-2 ;
-    if (y>(SIZE_AREA_Y-1)) y=(SIZE_AREA_Y-1);
-    else if (y<1) y=1;
+    switch (key_state)
+    {
+    case ENTER_st:
+        switch(rotate){
+            case ANGLE_0:  rotate=ANGLE_90;break;
+            case ANGLE_90:  rotate=ANGLE_180;break;
+            case ANGLE_180:  rotate=ANGLE_270;break;
+            case ANGLE_270:  rotate=ANGLE_0;break;
+        }
+        break;
+    case LEFT_st:
+        switch (rotate){
+            case ANGLE_0:
+                if(x>2)
+                    if ((Area[*y-1][x-2]==Qt::white)&&(Area[*y][x-1]==Qt::white)) x--;
+            break;
+            case ANGLE_90:
+                if(x>1)
+                    if ((Area[*y][x-2]==Qt::white)&&(Area[*y+1][x-2]==Qt::white)&&
+                        (Area[*y-1][x-1]==Qt::white)) x--;
+            break;
+            case ANGLE_180:
+                if(x>2)
+                    if ((Area[*y-1][x-2]==Qt::white)&&(Area[*y][x-1]==Qt::white)) x--;
+                break;
+            case ANGLE_270:
+                if(x>1)
+                    if ((Area[*y][x-2]==Qt::white)&&(Area[*y+1][x-2]==Qt::white)&&
+                        (Area[*y-1][x-1]==Qt::white)) x--;
+            break;
+        }break;
+    case RIGHT_st:
+        switch (rotate){
+            case ANGLE_0:
+                if(x<(SIZE_AREA_X-2))
+                   if ((Area[*y-1][x+1]==Qt::white)&&(Area[*y][x+2]==Qt::white)) x++;
+                break;
+            case ANGLE_90:
+                if(x<(SIZE_AREA_X-1))
+                    if ((Area[*y][x+1]==Qt::white)&&(Area[*y-1][x+1]==Qt::white)&&
+                        (Area[*y-1][x+1]==Qt::white)) x++;
+            break;
+            case ANGLE_180:
+                if(x<(SIZE_AREA_X-2))
+                   if ((Area[*y-1][x+1]==Qt::white)&&(Area[*y][x+2]==Qt::white)) x++;
+                break;
+            case ANGLE_270:
+                if(x<(SIZE_AREA_X-1))
+                    if ((Area[*y][x+1]==Qt::white)&&(Area[*y-1][x+1]==Qt::white)&&
+                        (Area[*y-1][x+1]==Qt::white)) x++;
+            break;
+        }
+        break;
+    default:
+        break;
+    }
     switch (rotate){
         case ANGLE_0:
-            Square(qp,x,y-2, J_COLOR);
-            Square(qp,x,y-1, J_COLOR);      //  0
-            Square(qp,x,y, J_COLOR);      // 000
-            Square(qp,x-1,y,J_COLOR);
+            if (*y>(SIZE_AREA_Y-1)) *y=(SIZE_AREA_Y-1);
+            else if (*y<3) *y=3;
+            Square(qp,x,*y-2, J_COLOR);
+            Square(qp,x,*y-1, J_COLOR);      //  0
+            Square(qp,x,*y, J_COLOR);      // 000
+            Square(qp,x-1,*y,J_COLOR);
+            state |= checkArea (x,*y-2);
+            state |= checkArea (x,*y-1);
+            state |= checkArea (x,*y);
+            state |= checkArea (x-1,*y);
+            if (state){
+                Area[*y-2][x]=J_COLOR;
+                Area[*y-1][x]=J_COLOR;
+                Area[*y][x]=J_COLOR;
+                Area[*y][x-1]=J_COLOR;
+                x=SIZE_AREA_X/2;
+                return true;
+            }
             break;
         case ANGLE_90:
-            Square(qp,x-1,y-1,J_COLOR);       // 0
-            Square(qp,x,y-1,J_COLOR);         //00
-            Square(qp,x+1,y-1,J_COLOR);       // 0
-            Square(qp,x+1,y,J_COLOR);
+        if (*y>(SIZE_AREA_Y)) *y=(SIZE_AREA_Y);
+        else if (*y<1) y++;
+            Square(qp,x-1,*y-1,J_COLOR);       // 0
+            Square(qp,x,*y-1,J_COLOR);         //00
+            Square(qp,x+1,*y-1,J_COLOR);       // 0
+            Square(qp,x+1,*y,J_COLOR);
+            state |= checkArea (x-1,*y-1);
+            state |= checkArea (x,*y-1);
+            state |= checkArea (x+1,*y-1);
+            state |= checkArea (x+1,*y);
+            if (state){
+                Area[*y-1][x-1]=J_COLOR;
+                Area[*y-1][x]=J_COLOR;
+                Area[*y-1][x+1]=J_COLOR;
+                Area[*y][x+1]=J_COLOR;
+                x=SIZE_AREA_X/2;
+                return true;
+            }
             break;
         case ANGLE_180:
-            Square(qp,x-1,y, J_COLOR);
-            Square(qp,x-1,y-1, J_COLOR);      //  0
-            Square(qp,x-1,y-2, J_COLOR);      // 000
-            Square(qp,x,y-2,J_COLOR);
+        if (*y>(SIZE_AREA_Y-1)) *y=(SIZE_AREA_Y-1);
+        else if (*y<3) *y=3;
+            Square(qp,x-1,*y, J_COLOR);
+            Square(qp,x-1,*y-1, J_COLOR);      //  0
+            Square(qp,x-1,*y-2, J_COLOR);      // 000
+            Square(qp,x,*y-2,J_COLOR);
+            state |= checkArea (x-1,*y);
+            state |= checkArea (x-1,*y-1);
+            state |= checkArea (x-1,*y-2);
+            state |= checkArea (x,*y-2);
+            if (state){
+                Area[*y][x-1]=J_COLOR;
+                Area[*y-1][x-1]=J_COLOR;
+                Area[*y-2][x-1]=J_COLOR;
+                Area[*y-2][x]=J_COLOR;
+                x=SIZE_AREA_X/2;
+                return true;
+            }
             break;
         case ANGLE_270:
-            Square(qp,x+1,y,J_COLOR);       // 0
-            Square(qp,x,y,J_COLOR);         //00
-            Square(qp,x-1,y-1,J_COLOR);       // 0
-            Square(qp,x-1,y,J_COLOR);
+            if (*y>(SIZE_AREA_Y)) *y=(SIZE_AREA_Y);
+            else if (*y<1) y++;
+            Square(qp,x+1,*y,J_COLOR);       // 0
+            Square(qp,x,*y,J_COLOR);         //00
+            Square(qp,x-1,*y-1,J_COLOR);       // 0
+            Square(qp,x-1,*y,J_COLOR);
+            state |= checkArea (x+1,*y);
+            state |= checkArea (x,*y);
+            state |= checkArea (x-1,*y-1);
+            state |= checkArea (x-1,*y);
+            if (state){
+                Area[*y][x+1]=J_COLOR;
+                Area[*y][x]=J_COLOR;
+                Area[*y-1][x-1]=J_COLOR;
+                Area[*y][x-1]=J_COLOR;
+                x=SIZE_AREA_X/2;
+                return true;
+            }
             break;
     }
+    return false;
 }
 bool MainWindow::L(QPainter *qp,int x, int y, state_t key_state)
 {

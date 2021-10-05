@@ -54,8 +54,8 @@ private:
     bool Q (QPainter *qp,int y, state_t key_state);
     bool I (QPainter *qp,int y, state_t key_state);
     bool Z (QPainter *qp,int y, state_t key_state);
-    bool S (QPainter *qp,int x, int y, state_t key_state);
-    bool J (QPainter *qp,int x, int y, state_t key_state);
+    bool S (QPainter *qp,int y, state_t key_state);
+    bool J (QPainter *qp,uint16_t *y, state_t key_state);
     bool L (QPainter *qp,int x, int y, state_t key_state);
 
     bool checkArea(int x, int y);
