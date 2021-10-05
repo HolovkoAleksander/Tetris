@@ -50,13 +50,13 @@ private:
     void Square(QPainter *qp,int x, int y, Qt::GlobalColor Color);
     void Square_without_margin(QPainter *qp,int x, int y, Qt::GlobalColor Color);
     void Square_margin(QPainter *qp,int x, int y);
-    bool T (QPainter *qp,int x, int y, state_t key_state);
-    bool Q (QPainter *qp,int y, state_t key_state);
-    bool I (QPainter *qp,int y, state_t key_state);
-    bool Z (QPainter *qp,int y, state_t key_state);
-    bool S (QPainter *qp,int y, state_t key_state);
+    bool T (QPainter *qp, uint16_t y, state_t key_state);
+    bool Q (QPainter *qp,uint16_t y, state_t key_state);
+    bool I (QPainter *qp,uint16_t y, state_t key_state);
+    bool Z (QPainter *qp,uint16_t y, state_t key_state);
+    bool S (QPainter *qp,uint16_t y, state_t key_state);
     bool J (QPainter *qp,uint16_t *y, state_t key_state);
-    bool L (QPainter *qp,int x, int y, state_t key_state);
+    bool L (QPainter *qp,uint16_t *y,  state_t key_state);
 
     bool checkArea(int x, int y);
 
