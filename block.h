@@ -53,7 +53,15 @@ public:
     bool S (QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s);
     bool J (QPainter *qp,uint16_t *y, state_t key_state,  angle_t rotate_s);
     bool L (QPainter *qp,uint16_t *y,  state_t key_state, angle_t rotate_s);
-    bool checkArea(int x, int y);
+
+    void nextT (QPainter *qp,angle_t rotate_s);
+    void nextQ (QPainter *qp);
+    void nextI (QPainter *qp,angle_t rotate_s);
+    void nextZ (QPainter *qp,angle_t rotate_s);
+    void nextS (QPainter *qp,angle_t rotate_s);
+    void nextJ (QPainter *qp,angle_t rotate_s);
+    void nextL (QPainter *qp,angle_t rotate_s);
+    void checkArea(int x, int y);
 signals:
 
 public:
