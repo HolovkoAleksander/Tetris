@@ -8,7 +8,7 @@
 #include "block.h"
 
  QRandomGenerator *randomGenerat;
- uint8_t Next_Block;
+ uint8_t NextBlock;
  uint8_t CurBlock;
 
 
@@ -27,8 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     randomGenerat =  QRandomGenerator::global();
     ui->widget->setStyleSheet("* { background-color: rgb(255,255,255,50) }");
-    Next_Block=randomGenerat->generate()%18;
-    CurBlock=Next_Block;
+    NextBlock=randomGenerat->generate()%18;
+    CurBlock=NextBlock;
 
 }
 void MainWindow::paintEvent(QPaintEvent *e) {
@@ -43,6 +43,11 @@ void MainWindow::paintEvent(QPaintEvent *e) {
         }
     }
     currentBlock(&qp);
+    for (int y=0;y<SIZE_AREA_Y;y++ ) {
+        for (int x=0;x< SIZE_AREA_X;x++) {
+           if (block->Area[y][x]!=Qt::white)Square_margin(&qp,x,y);
+        }
+    }
 }
 
 void MainWindow::currentBlock(QPainter *qp) {
@@ -69,71 +74,132 @@ void MainWindow::currentBlock(QPainter *qp) {
 
     }
     switch (CurBlock) {
-    case 0:
-        state=block->T(qp, &current_Y,key_state,block::ANGLE_0);
-        break;
-    case 1:
-        state=block->T(qp, &current_Y,key_state,block::ANGLE_90);
-        break;
-    case 2:
-        state=block->T(qp, &current_Y,key_state,block::ANGLE_180);
-        break;
-    case 3:
-        state=block->T(qp, &current_Y,key_state,block::ANGLE_270);
-        break;
-    case 4:
-        state=block->Q(qp, &current_Y,key_state);
-        break;
-    case 5:
-        state=block->I(qp, &current_Y,key_state,block::ANGLE_0);
-        break;
-    case 6:
-        state=block->I(qp, &current_Y,key_state,block::ANGLE_180);
-        break;
-    case 7:
-        state=block->Z(qp, &current_Y,key_state,block::ANGLE_0);
-        break;
-    case 8:
-        state=block->Z(qp, &current_Y,key_state,block::ANGLE_180);
-        break;
-    case 9:
-        state=block->S(qp, &current_Y,key_state,block::ANGLE_0);
-        break;
-    case 10:
-        state=block->S(qp, &current_Y,key_state,block::ANGLE_180);
-        break;
-    case 11:
-        state=block->J(qp, &current_Y,key_state,block::ANGLE_0);
-        break;
-    case 12:
-        state=block->J(qp, &current_Y,key_state,block::ANGLE_90);
-        break;
-    case 13:
-        state=block->J(qp, &current_Y,key_state,block::ANGLE_180);
-        break;
-    case 14:
-        state=block->J(qp, &current_Y,key_state,block::ANGLE_270);
-        break;
-    case 15:
-        state=block->L(qp, &current_Y,key_state,block::ANGLE_0);
-        break;
-    case 16:
-        state=block->L(qp, &current_Y,key_state,block::ANGLE_90);
-        break;
-    case 17:
-        state=block->L(qp, &current_Y,key_state,block::ANGLE_180);
-        break;
-    case 18:
-        state=block->L(qp, &current_Y,key_state,block::ANGLE_270);
-        break;
-    default:
-        break;
+        case 0:
+            state=block->T(qp, &current_Y,key_state,block::ANGLE_0);
+            break;
+        case 1:
+            state=block->T(qp, &current_Y,key_state,block::ANGLE_90);
+            break;
+        case 2:
+            state=block->T(qp, &current_Y,key_state,block::ANGLE_180);
+            break;
+        case 3:
+            state=block->T(qp, &current_Y,key_state,block::ANGLE_270);
+            break;
+        case 4:
+            state=block->Q(qp, &current_Y,key_state);
+            break;
+        case 5:
+            state=block->I(qp, &current_Y,key_state,block::ANGLE_0);
+            break;
+        case 6:
+            state=block->I(qp, &current_Y,key_state,block::ANGLE_180);
+            break;
+        case 7:
+            state=block->Z(qp, &current_Y,key_state,block::ANGLE_0);
+            break;
+        case 8:
+            state=block->Z(qp, &current_Y,key_state,block::ANGLE_180);
+            break;
+        case 9:
+            state=block->S(qp, &current_Y,key_state,block::ANGLE_0);
+            break;
+        case 10:
+            state=block->S(qp, &current_Y,key_state,block::ANGLE_180);
+            break;
+        case 11:
+            state=block->J(qp, &current_Y,key_state,block::ANGLE_0);
+            break;
+        case 12:
+            state=block->J(qp, &current_Y,key_state,block::ANGLE_90);
+            break;
+        case 13:
+            state=block->J(qp, &current_Y,key_state,block::ANGLE_180);
+            break;
+        case 14:
+            state=block->J(qp, &current_Y,key_state,block::ANGLE_270);
+            break;
+        case 15:
+            state=block->L(qp, &current_Y,key_state,block::ANGLE_0);
+            break;
+        case 16:
+            state=block->L(qp, &current_Y,key_state,block::ANGLE_90);
+            break;
+        case 17:
+            state=block->L(qp, &current_Y,key_state,block::ANGLE_180);
+            break;
+        case 18:
+            state=block->L(qp, &current_Y,key_state,block::ANGLE_270);
+            break;
+        default:
+            break;
+    }
+    switch (NextBlock) {
+        case 0:
+            block->nextT(qp, block::ANGLE_0);
+            break;
+        case 1:
+            block->nextT(qp,block::ANGLE_90);
+            break;
+        case 2:
+            block->nextT(qp,block::ANGLE_180);
+            break;
+        case 3:
+            block->nextT(qp,block::ANGLE_270);
+            break;
+        case 4:
+            block->nextQ(qp);
+            break;
+        case 5:
+            block->nextI(qp, block::ANGLE_0);
+            break;
+        case 6:
+            block->nextI(qp, block::ANGLE_180);
+            break;
+        case 7:
+            block->nextZ(qp, block::ANGLE_0);
+            break;
+        case 8:
+            block->nextZ(qp, block::ANGLE_180);
+            break;
+        case 9:
+            block->nextS(qp, block::ANGLE_0);
+            break;
+        case 10:
+            block->nextS(qp, block::ANGLE_180);
+            break;
+        case 11:
+            block->nextJ(qp, block::ANGLE_0);
+            break;
+        case 12:
+            block->nextJ(qp, block::ANGLE_90);
+            break;
+        case 13:
+            block->nextJ(qp, block::ANGLE_180);
+            break;
+        case 14:
+            block->nextJ(qp, block::ANGLE_270);
+            break;
+        case 15:
+            block->nextL(qp, block::ANGLE_0);
+            break;
+        case 16:
+            block->nextL(qp, block::ANGLE_90);
+            break;
+        case 17:
+            block->nextL(qp, block::ANGLE_180);
+            break;
+        case 18:
+            block->nextL(qp, block::ANGLE_270);
+            break;
+        default:
+            break;
     }
     if (state){
       current_X= SIZE_AREA_X/2;
       current_Y=0;
-      CurBlock=Next_Block;
-      Next_Block=randomGenerat->generate()%18;
+      CurBlock=NextBlock;
+      NextBlock=randomGenerat->generate()%18;
     }
     key_state=block::RELASE;
     update();

@@ -8,10 +8,10 @@
 #define WIDHT 300
 #define HEIGHT 500
 
-#define NEXT_LEFT 345
+#define NEXT_LEFT 340
 #define NEXT_TOP 110
-#define NEXT_WIGHT  50
-#define NEXT_HEIGHT 50
+#define NEXT_WIGHT  60
+#define NEXT_HEIGHT 60
 
 
 #define SIZE 10
@@ -61,7 +61,7 @@ public:
     void nextS (QPainter *qp,angle_t rotate_s);
     void nextJ (QPainter *qp,angle_t rotate_s);
     void nextL (QPainter *qp,angle_t rotate_s);
-    void checkArea(int x, int y);
+    bool checkArea(int x, int y);
 signals:
 
 public:
