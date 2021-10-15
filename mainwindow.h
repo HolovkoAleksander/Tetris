@@ -26,6 +26,7 @@ private:
 
     void Square_without_margin(QPainter *qp,int x, int y, Qt::GlobalColor Color);
     void Square_margin(QPainter *qp,int x, int y);
+    void Check_line (void);
 
 
 
@@ -36,10 +37,14 @@ protected:
 private:
     block *block=new class block(this);
     Ui::MainWindow *ui;
+    QTimer *timer;
     block::state_t key_state=block::RELASE;
     bool count=false;
     uint16_t current_X=0;
     uint16_t current_Y=0;
+    uint32_t points=0;
+    uint8_t Speed=0;
+    uint32_t Record=0;
 
 
 };

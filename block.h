@@ -5,16 +5,16 @@
 #include <QPainter>
 #define TOP 20
 #define LEFT 20
-#define WIDHT 300
-#define HEIGHT 500
+#define WIDHT 400
+#define HEIGHT 600
 
-#define NEXT_LEFT 340
-#define NEXT_TOP 110
-#define NEXT_WIGHT  60
-#define NEXT_HEIGHT 60
+#define NEXT_LEFT (LEFT+WIDHT+20)
+#define NEXT_TOP 150
+#define NEXT_WIGHT  100
+#define NEXT_HEIGHT 100
 
 
-#define SIZE 10
+#define SIZE 20
 #define SIZE_AREA_X ((WIDHT)/SIZE)
 #define SIZE_AREA_Y ((HEIGHT)/SIZE)
 

@@ -10,32 +10,69 @@
  QRandomGenerator *randomGenerat;
  uint8_t NextBlock;
  uint8_t CurBlock;
-
+    uint32_t newTimer=1000;
+    uint32_t prevTimer=1000;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    ,timer(new QTimer())
 {
     ui->setupUi(this);
-    QTimer *timer= new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(slotTimerAlarm()));
-    timer->start(1000); // И запустим таймер
+    timer->start(newTimer); // И запустим таймер
     for (int y=0;y<SIZE_AREA_Y;y++ ) {
         for (int x=0;x< SIZE_AREA_X;x++) {
             block->Area[y][x]=Qt::white;
         }
     }
+    /*for (int x=1;x< SIZE_AREA_X;x++) {
+        block->Area[SIZE_AREA_Y-1][x]=I_COLOR;
+    }
+    for (int x=1;x< SIZE_AREA_X;x++) {
+        block->Area[SIZE_AREA_Y-2][x]=I_COLOR;
+    }
+    for (int x=1;x< SIZE_AREA_X;x++) {
+        block->Area[SIZE_AREA_Y-3][x]=I_COLOR;
+    }
+    for (int x=1;x< SIZE_AREA_X;x++) {
+        block->Area[SIZE_AREA_Y-4][x]=I_COLOR;
+    }*/
     randomGenerat =  QRandomGenerator::global();
     ui->widget->setStyleSheet("* { background-color: rgb(255,255,255,50) }");
     NextBlock=randomGenerat->generate()%18;
     CurBlock=NextBlock;
+    QFont font = ui->label->font();
+    font.setPointSize(14);
+    font.setBold(true);
+    ui->label_2->setFont(font);
+    ui->label_3->setFont(font);
+    ui->label_4->setFont(font);
+    ui->label_5->setFont(font);
+    ui->label_6->setFont(font);
+    ui->label_7->setFont(font);
+    ui->label_6->setText("Record");
+    ui->label_7->setText(QString::number(Record));
+    ui->label_4->setText("Speed");
+    ui->label_5->setText(QString::number(Speed));
+    ui->label->setFont(font);
+    ui->label_2->setText(QString::number(0));
+    ui->label->setGeometry(NEXT_LEFT,NEXT_TOP-55,100,20);
+    ui->label_2->setGeometry(NEXT_LEFT,NEXT_TOP+NEXT_HEIGHT+60,100,20);
+    ui->label_3->setGeometry(NEXT_LEFT,NEXT_TOP+NEXT_HEIGHT+30,100,20);
+    ui->label_4->setGeometry(NEXT_LEFT,NEXT_TOP+NEXT_HEIGHT+90,100,20);
+    ui->label_5->setGeometry(NEXT_LEFT,NEXT_TOP+NEXT_HEIGHT+120,100,20);
+    ui->label_6->setGeometry(NEXT_LEFT,20,100,20);
+    ui->label_7->setGeometry(NEXT_LEFT,50,100,20);
 
 }
 void MainWindow::paintEvent(QPaintEvent *e) {
 
     Q_UNUSED(e);
     QPainter qp(this);
-
+    Check_line();
+    ui->label_2->setText(QString::number(points));
+     ui->label_5->setText(QString::number(Speed));
     for (int y=0;y<SIZE_AREA_Y;y++ ) {
         for (int x=0;x< SIZE_AREA_X;x++) {
             Square_without_margin(&qp,x,y, block->Area[y][x]);
@@ -43,17 +80,47 @@ void MainWindow::paintEvent(QPaintEvent *e) {
         }
     }
     currentBlock(&qp);
-    for (int y=0;y<SIZE_AREA_Y;y++ ) {
-        for (int x=0;x< SIZE_AREA_X;x++) {
-           if (block->Area[y][x]!=Qt::white)Square_margin(&qp,x,y);
-        }
+    if (points<10000){
+        newTimer=1000;
+        Speed=0;
+    }else if (points<20000){
+        newTimer=900;
+        Speed=1;
+    }else if (points<30000){
+        Speed=2;
+        newTimer=800;
+    }else if (points<40000){
+        Speed=3;
+        newTimer=700;
+    }else if (points<50000){
+        Speed=4;
+        newTimer=600;
+    }else if (points<60000){
+        Speed=5;
+        newTimer=500;
+    }else if (points<70000){
+        Speed=6;
+        newTimer=400;
+    }else if (points<80000){
+        Speed=7;
+        newTimer=300;
+    }else if (points<90000){
+        Speed=8;
+        newTimer=200;
+    }else{
+        Speed=9;
+        newTimer=100;
+    }
+    if (newTimer!=prevTimer){
+        prevTimer=newTimer;
+        timer->start(newTimer);
     }
 }
 
 void MainWindow::currentBlock(QPainter *qp) {
     qp->drawRect(LEFT,TOP, WIDHT, HEIGHT);
 
-    qp->drawRect(NEXT_LEFT, NEXT_TOP, NEXT_WIGHT, NEXT_HEIGHT);
+    //qp->drawRect(NEXT_LEFT, NEXT_TOP, NEXT_WIGHT, NEXT_HEIGHT);
     //qp->setPen(QPen (Qt::red, 5, Qt::SolidLine));
 
     bool state=false;
@@ -72,7 +139,7 @@ void MainWindow::currentBlock(QPainter *qp) {
             break;
         }
 
-    }
+    }//CurBlock
     switch (CurBlock) {
         case 0:
             state=block->T(qp, &current_Y,key_state,block::ANGLE_0);
@@ -133,7 +200,7 @@ void MainWindow::currentBlock(QPainter *qp) {
             break;
         default:
             break;
-    }
+    }//NextBlock
     switch (NextBlock) {
         case 0:
             block->nextT(qp, block::ANGLE_0);
@@ -219,10 +286,10 @@ void MainWindow::drawPointBW(QPainter *qp,int x, int y, uint8_t Color){
 
 void MainWindow::Square_without_margin(QPainter *qp, int x, int y, Qt::GlobalColor Color)
 {
-    int Top=TOP+y*10;
-    int Button=Top+10;
-    int Left=LEFT+x*10;
-    int Right=Left+10;
+    int Top=TOP+y*SIZE;
+    int Button=Top+SIZE;
+    int Left=LEFT+x*SIZE;
+    int Right=Left+SIZE;
     int Height;
     int Width;
     Height = Button-Top;
@@ -232,16 +299,64 @@ void MainWindow::Square_without_margin(QPainter *qp, int x, int y, Qt::GlobalCol
 
 void MainWindow::Square_margin(QPainter *qp, int x, int y)
 {
-    int Top=TOP+y*10;
-    int Button=Top+10;
-    int Left=LEFT+x*10;
-    int Right=Left+10;
+    int Top=TOP+y*SIZE;
+    int Button=Top+SIZE;
+    int Left=LEFT+x*SIZE;
+    int Right=Left+SIZE;
     int Height;
     int Width;
     Height = Button-Top;
     Width  = Right-Left;
     qp->setPen(QPen (Qt::black, 1, Qt::SolidLine));
     qp->drawRect(Left, Top, Width, Height);
+}
+
+void MainWindow::Check_line()
+{
+    bool line=true;
+    uint8_t numLine=0;
+    uint16_t eraseLine[4]={0,0,0,0};
+    for (int y=(SIZE_AREA_Y-1);y!=0;y-- ) {
+        line=true;
+        for (int x=0;x< SIZE_AREA_X;x++) {
+           if (block->Area[y][x]==Qt::white){
+               line=false;
+           }
+        }
+        if (line){
+            eraseLine[numLine]=y;
+            numLine++;
+
+        }
+    }
+    if (numLine){
+        qDebug() <<eraseLine[0] <<eraseLine[1] <<eraseLine[2] <<eraseLine[3];
+       for (uint8_t i=0;i<4 ;i++ ) {
+            if (eraseLine[i]){
+                for (int st_Y=eraseLine[i]+i;st_Y!=1;st_Y--) {
+                        for (int x=0;x< SIZE_AREA_X;x++) {
+                           block->Area[st_Y][x]=block->Area[st_Y-1][x];
+                        }
+                 }
+            }
+        }
+    }
+
+   /* for (int st_Y=y;st_Y!=1;st_Y--) {
+        for (int x=0;x< SIZE_AREA_X;x++) {
+           block->Area[st_Y][x]=block->Area[st_Y-1][x];
+        }
+    }
+    y=(SIZE_AREA_Y-1);*/
+    //if (numLine) qDebug() << eraseLine[0] <<eraseLine[1] << eraseLine[2]  << eraseLine[3];
+    switch (numLine){
+    case 1: points+=100; break;
+    case 2: points+=400; break;
+    case 3: points+=800; break;
+    case 4: points+=1600;break;
+    default:
+        break;
+    }
 }
 MainWindow::~MainWindow()
 {

@@ -22,7 +22,7 @@ bool block::T(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
                 rotate=ANGLE_90;
                 break;
             case ANGLE_90:
-                if ((Area[*y-2][x-1]==Qt::white)&&(Area[*y-1][x+1]==Qt::white))
+                if ((Area[*y-2][x-1]==Qt::white)&&(Area[*y-1][x+1]==Qt::white)&&(x>0)&&(x<(SIZE_AREA_X-1)))
                 rotate=ANGLE_180;
                 if(x>(SIZE_AREA_X-1)) x=SIZE_AREA_X-1;
                 break;
@@ -30,7 +30,7 @@ bool block::T(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
                 rotate=ANGLE_270;
                 break;
             case ANGLE_270:
-                if ((Area[*y][x-1]==Qt::white)&&(Area[*y][x+1]==Qt::white))
+                if ((Area[*y][x-1]==Qt::white)&&(Area[*y][x+1]==Qt::white)&&(x>0)&&(x<(SIZE_AREA_X-1)))
                 rotate=ANGLE_0;
                 if(x>(SIZE_AREA_X-1)) x=SIZE_AREA_X-1;
                 break;
@@ -64,7 +64,7 @@ bool block::T(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
                 break;
             case ANGLE_90:
                 if(x<(SIZE_AREA_X-1))
-                    if ((Area[*y][x]==Qt::white)&&(Area[*y-1][x]==Qt::white)&&(Area[*y-2][x]==Qt::white)) x++;
+                    if ((Area[*y][x]==Qt::white)&&(Area[*y-1][x+1]==Qt::white)&&(Area[*y-2][x]==Qt::white)) x++;
             break;
             case ANGLE_180:
                 if(x<(SIZE_AREA_X-2))
@@ -219,7 +219,7 @@ bool block::I(QPainter *qp, uint16_t *y, state_t key_state, angle_t rotate_s)
                 break;
             case ANGLE_180:
                 if ((Area[*y][x-1]==Qt::white)&&(Area[*y][x]==Qt::white)&&
-                    (Area[*y][x+1]==Qt::white)&&(Area[*y][x+2]==Qt::white))
+                    (Area[*y][x+1]==Qt::white)&&(Area[*y][x+2]==Qt::white)&&(x<(SIZE_AREA_X-2))&&(x>0))
                     rotate=ANGLE_0;
                 break;
             default:
@@ -304,7 +304,7 @@ bool block::Z(QPainter *qp, uint16_t *y, state_t key_state, angle_t rotate_s)
         switch(rotate){
             case ANGLE_0:  rotate=ANGLE_180;break;
             case ANGLE_180:
-                if ((Area[*y][x-1]!=Qt::white)&&(Area[*y-1][x+1]!=Qt::white))
+                if ((Area[*y][x-1]==Qt::white)&&(Area[*y-1][x+1]==Qt::white)&&(x<(SIZE_AREA_X-1))&&(x>0))
                 rotate=ANGLE_0;
                 break;
         default:
@@ -313,7 +313,7 @@ bool block::Z(QPainter *qp, uint16_t *y, state_t key_state, angle_t rotate_s)
         break;
     case LEFT_st:
         if (rotate==ANGLE_0){
-            if(x>2){
+            if(x>1){
                 if ((Area[*y][x-2]==Qt::white)&&(Area[*y-1][x-1]==Qt::white)) x--;
             }
         }else{
@@ -395,7 +395,7 @@ bool block::S(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
         switch(rotate){
             case ANGLE_0:  rotate=ANGLE_180;break;
             case ANGLE_180:
-                if ((Area[*y-1][x-1]==Qt::white)&&(Area[*y][x+1]==Qt::white))
+                if ((Area[*y-1][x-1]==Qt::white)&&(Area[*y][x+1]==Qt::white)&&(x<(SIZE_AREA_X-1))&&(x>0))
                 rotate=ANGLE_0;
                 break;
         default:
@@ -404,7 +404,7 @@ bool block::S(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
         break;
     case LEFT_st:
         if (rotate==ANGLE_0){
-            if(x>2){
+            if(x>1){
                 if ((Area[*y-1][x-2]==Qt::white)&&(Area[*y][x-1]==Qt::white)) x--;
             }
         }else{
@@ -548,7 +548,7 @@ bool block::J(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
     switch (rotate){
         case ANGLE_0:
             if (*y>(SIZE_AREA_Y-1)) *y=(SIZE_AREA_Y-1);
-            else if (*y<3) *y=3;
+            else if (*y<2) *y=2;
             Square(qp,x,*y-2, J_COLOR);
             Square(qp,x,*y-1, J_COLOR);      //  0
             Square(qp,x,*y, J_COLOR);      // 000
@@ -569,7 +569,7 @@ bool block::J(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
             break;
         case ANGLE_90:
         if (*y>(SIZE_AREA_Y)) *y=(SIZE_AREA_Y);
-        else if (*y<1) y++;
+        else if (*y<1) *y=1;
             Square(qp,x-1,*y-1,J_COLOR);       // 0
             Square(qp,x,*y-1,J_COLOR);         //00
             Square(qp,x+1,*y-1,J_COLOR);       // 0
@@ -590,7 +590,7 @@ bool block::J(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
             break;
         case ANGLE_180:
         if (*y>(SIZE_AREA_Y-1)) *y=(SIZE_AREA_Y-1);
-        else if (*y<3) *y=3;
+        else if (*y<2) *y=2;
             Square(qp,x-1,*y, J_COLOR);
             Square(qp,x-1,*y-1, J_COLOR);      //  0
             Square(qp,x-1,*y-2, J_COLOR);      // 000
@@ -611,7 +611,7 @@ bool block::J(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
             break;
         case ANGLE_270:
             if (*y>(SIZE_AREA_Y)) *y=(SIZE_AREA_Y);
-            else if (*y<1) y++;
+            else if (*y<1) *y=1;
             Square(qp,x+1,*y,J_COLOR);       // 0
             Square(qp,x,*y,J_COLOR);         //00
             Square(qp,x-1,*y-1,J_COLOR);       // 0
@@ -706,7 +706,7 @@ bool block::L(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
     switch (rotate){
         case ANGLE_0:
             if (*y>(SIZE_AREA_Y-1)) *y=(SIZE_AREA_Y-1);
-            else if (*y<3) *y=3;
+            else if (*y<2) *y=2;
             Square(qp,x-1,*y-2, L_COLOR);
             Square(qp,x-1,*y-1, L_COLOR);      //  0
             Square(qp,x-1,*y, L_COLOR);      // 000
@@ -727,7 +727,7 @@ bool block::L(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
             break;
         case ANGLE_90:
         if (*y>(SIZE_AREA_Y)) *y=(SIZE_AREA_Y);
-        else if (*y<1) y++;
+        else if (*y<1) *y=1;
             Square(qp,x+1,*y,L_COLOR);       // 0
             Square(qp,x+1,*y-1,L_COLOR);       // 0
             Square(qp,x,*y,L_COLOR);         //00
@@ -748,7 +748,7 @@ bool block::L(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
             break;
         case ANGLE_180:
         if (*y>(SIZE_AREA_Y-1)) *y=(SIZE_AREA_Y-1);
-        else if (*y<3) *y=3;
+        else if (*y<2) *y=2;
             Square(qp,x,*y, L_COLOR);
             Square(qp,x,*y-1, L_COLOR);      //  0
             Square(qp,x,*y-2, L_COLOR);      // 000
@@ -769,7 +769,7 @@ bool block::L(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
             break;
         case ANGLE_270:
             if (*y>(SIZE_AREA_Y)) *y=(SIZE_AREA_Y);
-            else if (*y<1) y++;
+            else if (*y<1) *y=1;
             Square(qp,x-1,*y-1,L_COLOR);       // 0
             Square(qp,x,*y-1,L_COLOR);         //00
             Square(qp,x+1,*y-1,L_COLOR);       // 0
@@ -801,10 +801,10 @@ bool block::checkArea(int x, int y)
 
 void block::Square(QPainter *qp, int x, int y, Qt::GlobalColor Color)
 {
-    int Top=TOP+y*10;
-    int Button=Top+10;
-    int Left=LEFT+x*10;
-    int Right=Left+10;
+    int Top=TOP+y*SIZE;
+    int Button=Top+SIZE;
+    int Left=LEFT+x*SIZE;
+    int Right=Left+SIZE;
     int Height;
     int Width;
     Height = Button-Top;
@@ -821,32 +821,32 @@ void block::nextT(QPainter *qp, angle_t rotate_s)
     uint16_t x,y;
     switch (rotate_s){
         case ANGLE_0:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10);
+            x=(NEXT_LEFT/SIZE+1);
+            y=(NEXT_TOP/SIZE+1);
             Square(qp,x-1,y, T_COLOR);
             Square(qp,x  ,y, T_COLOR);      //  0
             Square(qp,x+1,y, T_COLOR);      // 000
             Square(qp,x  ,y-1,T_COLOR);
             break;
         case ANGLE_90:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10+1);
+            x=(NEXT_LEFT/SIZE+1);
+            y=(NEXT_TOP/SIZE+2);
             Square(qp,x-1,y,T_COLOR);       // 0
             Square(qp,x-1,y-1,T_COLOR);         //00
             Square(qp,x-1,y-2,T_COLOR);       // 0
             Square(qp,x,y-1,T_COLOR);
             break;
         case ANGLE_180:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10+1);
+            x=(NEXT_LEFT/SIZE+1);
+            y=(NEXT_TOP/SIZE+2);
             Square(qp,x-1,y-2,T_COLOR);
             Square(qp,x,y-2,T_COLOR);         //
             Square(qp,x+1,y-2,T_COLOR);       //000
             Square(qp,x,y-1,T_COLOR);       // 0
             break;
         case ANGLE_270:
-            x=(NEXT_LEFT/10)-1;
-            y=(NEXT_TOP/10+1);
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE+2);
             Square(qp,x+1,y,T_COLOR);
             Square(qp,x+1,y-1,T_COLOR);       // 0
             Square(qp,x+1,y-2,T_COLOR);     //00
@@ -857,7 +857,7 @@ void block::nextT(QPainter *qp, angle_t rotate_s)
 
 void block::nextQ(QPainter *qp)
 {
-    uint16_t x=(NEXT_LEFT/10)-1,y=(NEXT_TOP/10);
+    uint16_t x=(NEXT_LEFT/SIZE)+1,y=(NEXT_TOP/SIZE)+1;
     Square(qp,x+1,y-1,Q_COLOR);
     Square(qp,x+1,y,Q_COLOR);       // 0
     Square(qp,x,y-1,Q_COLOR);     //00
@@ -869,16 +869,16 @@ void block::nextI(QPainter *qp, angle_t rotate_s)
     uint16_t x,y;
     switch (rotate_s){
         case ANGLE_0:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10);
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE);
             Square(qp,x+2,y,I_COLOR);
             Square(qp,x+1,y,I_COLOR);       // 0
             Square(qp,x,y,I_COLOR);     //00
             Square(qp,x-1,y,I_COLOR);
             break;
         case ANGLE_180:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10+1);
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE+2);
             Square(qp,x,y-2,I_COLOR);
             Square(qp,x,y-1,I_COLOR);       // 0
             Square(qp,x,y,I_COLOR);     //00
@@ -893,16 +893,16 @@ void block::nextZ(QPainter *qp,angle_t rotate_s)
     uint16_t x,y;
     switch (rotate_s){
         case ANGLE_0:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10+1);
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE+1);
             Square(qp,x-1,y,Z_COLOR);
             Square(qp,x,y,Z_COLOR);       // 0
             Square(qp,x,y-1,Z_COLOR);     //00
             Square(qp,x+1,y-1,Z_COLOR);
             break;
         case ANGLE_180:
-            x=(NEXT_LEFT/10+1);
-            y=(NEXT_TOP/10);
+            x=(NEXT_LEFT/SIZE+1);
+            y=(NEXT_TOP/SIZE+1);
             Square(qp,x,y,Z_COLOR);
             Square(qp,x,y+1,Z_COLOR);       // 0
             Square(qp,x-1,y,Z_COLOR);     //00
@@ -917,16 +917,16 @@ void block::nextS(QPainter *qp, angle_t rotate_s)
     uint16_t x,y;
     switch (rotate_s){
         case ANGLE_0:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10+1);
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE+1);
             Square(qp,x+1,y,S_COLOR);
             Square(qp,x,y,S_COLOR);       // 0
             Square(qp,x,y-1,S_COLOR);     //00
             Square(qp,x-1,y-1,S_COLOR);
             break;
         case ANGLE_180:
-            x=(NEXT_LEFT/10+1);
-            y=(NEXT_TOP/10);
+            x=(NEXT_LEFT/SIZE+1);
+            y=(NEXT_TOP/SIZE);
             Square(qp,x-1,y,S_COLOR);
             Square(qp,x-1,y+1,S_COLOR);       // 0
             Square(qp,x,y,S_COLOR);     //00
@@ -941,32 +941,32 @@ void block::nextJ(QPainter *qp,angle_t rotate_s)
     uint16_t x,y;
     switch (rotate_s){
         case ANGLE_0:
-            x=(NEXT_LEFT/10)+1;
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE)+1;
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x,y-2, J_COLOR);
             Square(qp,x,y-1, J_COLOR);      //  0
             Square(qp,x,y, J_COLOR);      // 000
             Square(qp,x-1,y,J_COLOR);
             break;
         case ANGLE_90:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x-1,y-1,J_COLOR);       // 0
             Square(qp,x,y-1,J_COLOR);         //00
             Square(qp,x+1,y-1,J_COLOR);       // 0
             Square(qp,x+1,y,J_COLOR);
             break;
         case ANGLE_180:
-            x=(NEXT_LEFT/10)+1;
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE)+1;
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x-1,y, J_COLOR);
             Square(qp,x-1,y-1, J_COLOR);      //  0
             Square(qp,x-1,y-2, J_COLOR);      // 000
             Square(qp,x,y-2,J_COLOR);
             break;
         case ANGLE_270:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x+1,y,J_COLOR);       // 0
             Square(qp,x,y,J_COLOR);         //00
             Square(qp,x-1,y-1,J_COLOR);       // 0
@@ -979,24 +979,24 @@ void block::nextL(QPainter *qp,angle_t rotate_s)
     uint16_t x,y;
     switch (rotate_s){
         case ANGLE_0:
-            x=(NEXT_LEFT/10)+1;
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE)+1;
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x-1,y-2, L_COLOR);
             Square(qp,x-1,y-1, L_COLOR);      //  0
             Square(qp,x-1,y, L_COLOR);      // 000
             Square(qp,x,y,L_COLOR);
             break;
         case ANGLE_90:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x+1,y,L_COLOR);       // 0
             Square(qp,x+1,y-1,L_COLOR);       // 0
             Square(qp,x,y,L_COLOR);         //00
             Square(qp,x-1,y,L_COLOR);
             break;
         case ANGLE_180:
-            x=(NEXT_LEFT/10)+1;
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE)+1;
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x,y, L_COLOR);
             Square(qp,x,y-1, L_COLOR);      //  0
             Square(qp,x,y-2, L_COLOR);      // 000
@@ -1004,8 +1004,8 @@ void block::nextL(QPainter *qp,angle_t rotate_s)
 
             break;
         case ANGLE_270:
-            x=(NEXT_LEFT/10);
-            y=(NEXT_TOP/10)+1;
+            x=(NEXT_LEFT/SIZE);
+            y=(NEXT_TOP/SIZE)+1;
             Square(qp,x-1,y-1,L_COLOR);       // 0
             Square(qp,x,y-1,L_COLOR);         //00
             Square(qp,x+1,y-1,L_COLOR);       // 0

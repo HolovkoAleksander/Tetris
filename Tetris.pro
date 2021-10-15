@@ -10,11 +10,13 @@ CONFIG += c++11
 
 SOURCES += \
     block.cpp \
+    config_file.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     block.h \
+    config_file.h \
     mainwindow.h
 
 FORMS += \
