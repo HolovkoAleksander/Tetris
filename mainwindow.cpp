@@ -385,3 +385,29 @@ void MainWindow::slotTimerAlarm()
     count=true;
     update();
 }
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    configFile.points=points;
+    configFile.record=Record;
+    for (int y=(SIZE_AREA_Y-1);y!=0;y-- ) {
+        for (int x=0;x< SIZE_AREA_X;x++) {
+
+            switch (block->Area[y][x]){
+                case T_COLOR:configFile.area[y][x]=1; break;
+                case Q_COLOR:configFile.area[y][x]=2; break;
+                case I_COLOR:configFile.area[y][x]=3; break;
+                case Z_COLOR:configFile.area[y][x]=4;break;
+                case S_COLOR:configFile.area[y][x]=5; break;
+                case J_COLOR:configFile.area[y][x]=6; break;
+                case L_COLOR:configFile.area[y][x]=7; break;
+            default:
+                configFile.area[y][x]=0;
+                break;
+
+            }
+        }
+    }
+    memcpy((void *)&configFile.area,(void *)&block->Area,(SIZE_AREA_X*SIZE_AREA_Y));
+    config->save_Config(configFile);
+}

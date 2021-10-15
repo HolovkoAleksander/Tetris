@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "block.h"
+#include "config_file.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -11,11 +12,14 @@ QT_END_NAMESPACE
 
 
 class block;
+class config;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private slots:
     void slotTimerAlarm ();
+    void on_pushButton_5_clicked();
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -36,6 +40,8 @@ protected:
     virtual void keyPressEvent( QKeyEvent * event);
 private:
     block *block=new class block(this);
+    config *config =new class config(this);
+    config::configFile_t configFile;
     Ui::MainWindow *ui;
     QTimer *timer;
     block::state_t key_state=block::RELASE;
