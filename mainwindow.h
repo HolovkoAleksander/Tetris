@@ -20,6 +20,8 @@ private slots:
     void slotTimerAlarm ();
     void on_pushButton_5_clicked();
 
+    void on_pushButton_6_clicked();
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

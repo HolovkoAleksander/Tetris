@@ -390,6 +390,8 @@ void MainWindow::on_pushButton_5_clicked()
 {
     configFile.points=points;
     configFile.record=Record;
+    configFile.curNumber=CurBlock;
+     configFile.nextNumber=NextBlock;
     for (int y=(SIZE_AREA_Y-1);y!=0;y-- ) {
         for (int x=0;x< SIZE_AREA_X;x++) {
 
@@ -397,7 +399,7 @@ void MainWindow::on_pushButton_5_clicked()
                 case T_COLOR:configFile.area[y][x]=1; break;
                 case Q_COLOR:configFile.area[y][x]=2; break;
                 case I_COLOR:configFile.area[y][x]=3; break;
-                case Z_COLOR:configFile.area[y][x]=4;break;
+                case Z_COLOR:configFile.area[y][x]=4; break;
                 case S_COLOR:configFile.area[y][x]=5; break;
                 case J_COLOR:configFile.area[y][x]=6; break;
                 case L_COLOR:configFile.area[y][x]=7; break;
@@ -407,7 +409,37 @@ void MainWindow::on_pushButton_5_clicked()
 
             }
         }
+
     }
-    memcpy((void *)&configFile.area,(void *)&block->Area,(SIZE_AREA_X*SIZE_AREA_Y));
-    config->save_Config(configFile);
+   // memcpy((void *)&configFile.area,(void *)&block->Area,(SIZE_AREA_X*SIZE_AREA_Y));
+    config->save_Config(&configFile);
 }
+
+void MainWindow::on_pushButton_6_clicked()
+{
+   config->open_Config(&configFile);
+   points=configFile.points;
+   Record=configFile.record;
+   CurBlock=configFile.curNumber;
+   NextBlock=configFile.nextNumber;
+   for (int y=(SIZE_AREA_Y-1);y!=0;y-- ) {
+       for (int x=0;x< SIZE_AREA_X;x++) {
+
+           switch (configFile.area[y][x]){
+               case 1:block->Area[y][x]=T_COLOR; break;
+               case 2:block->Area[y][x]=Q_COLOR; break;
+               case 3:block->Area[y][x]=I_COLOR; break;
+               case 4:block->Area[y][x]=Z_COLOR; break;
+               case 5:block->Area[y][x]=S_COLOR; break;
+               case 6:block->Area[y][x]=J_COLOR; break;
+               case 7:block->Area[y][x]=L_COLOR; break;
+           default:
+               block->Area[y][x]=NULL_COLOR;
+               break;
+
+           }
+       }
+
+   }
+}
+

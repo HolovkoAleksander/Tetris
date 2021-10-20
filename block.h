@@ -25,6 +25,7 @@
 #define S_COLOR Qt::magenta
 #define J_COLOR Qt::yellow
 #define L_COLOR Qt::darkGray
+#define NULL_COLOR Qt::white
 class block : public QObject
 {
     Q_OBJECT
