@@ -22,6 +22,8 @@ private slots:
 
     void on_pushButton_6_clicked();
 
+    void on_pushButton_7_clicked();
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -53,6 +55,7 @@ private:
     uint32_t points=0;
     uint8_t Speed=0;
     uint32_t Record=0;
+    bool endGame=false;
 
 
 };

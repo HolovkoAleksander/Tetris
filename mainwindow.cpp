@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
             block->Area[y][x]=Qt::white;
         }
     }
+    config->open_Config(&configFile);
+    Record=configFile.record;
     /*for (int x=1;x< SIZE_AREA_X;x++) {
         block->Area[SIZE_AREA_Y-1][x]=I_COLOR;
     }
@@ -76,10 +78,24 @@ void MainWindow::paintEvent(QPaintEvent *e) {
     for (int y=0;y<SIZE_AREA_Y;y++ ) {
         for (int x=0;x< SIZE_AREA_X;x++) {
             Square_without_margin(&qp,x,y, block->Area[y][x]);
-            if (block->Area[y][x]!=Qt::white)Square_margin(&qp,x,y);
+            if (block->Area[y][x]!=Qt::white){
+                Square_margin(&qp,x,y);
+                if (y==0) endGame=true;
+            }
         }
+
+    }
+    if (endGame){
+        qDebug() << "endGame";
+        QLabel *labelEndGame = new QLabel(this);
+        labelEndGame->setGeometry(LEFT+WIDHT+100,TOP+HEIGHT-50,100,20);
+        labelEndGame->setText("END GAME");
+        timer->stop();
+        return;
     }
     currentBlock(&qp);
+    if (points>Record) Record=points;
+    ui->label_7->setText(QString::number(Record));
     if (points<10000){
         newTimer=1000;
         Speed=0;
@@ -441,5 +457,20 @@ void MainWindow::on_pushButton_6_clicked()
        }
 
    }
+}
+
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    for (int y=0;y<SIZE_AREA_Y;y++ ) {
+        for (int x=0;x< SIZE_AREA_X;x++) {
+            block->Area[y][x]=Qt::white;
+        }
+    }
+    NextBlock=randomGenerat->generate()%18;
+    CurBlock=NextBlock;
+    NextBlock=randomGenerat->generate()%18;
+    timer->start(newTimer);
+    endGame=false;
 }
 
