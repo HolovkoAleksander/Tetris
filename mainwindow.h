@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
 #include "block.h"
 #include "config_file.h"
 
@@ -23,6 +24,14 @@ private slots:
     void on_pushButton_6_clicked();
 
     void on_pushButton_7_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_4_clicked();
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -56,6 +65,7 @@ private:
     uint8_t Speed=0;
     uint32_t Record=0;
     bool endGame=false;
+    QLabel *labelEndGame= new QLabel(this);
 
 
 };

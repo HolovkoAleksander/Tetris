@@ -1,4 +1,5 @@
 #include "block.h"
+#include <QRandomGenerator>
 
 block::block(QObject *parent) : QObject(parent)
 {
@@ -790,6 +791,12 @@ bool block::L(QPainter *qp,uint16_t *y, state_t key_state, angle_t rotate_s)
             break;
     }
     return false;
+}
+
+void block::endGame(QPainter *qp)
+{
+
+
 }
 
 bool block::checkArea(int x, int y)

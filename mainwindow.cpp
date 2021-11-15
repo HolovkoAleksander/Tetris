@@ -26,6 +26,16 @@ MainWindow::MainWindow(QWidget *parent)
             block->Area[y][x]=Qt::white;
         }
     }
+
+
+    labelEndGame->setGeometry(LEFT,TOP+150,500,72);
+    QFont font;
+    font.setPointSize(50);
+    font.setBold(true);
+    labelEndGame->setStyleSheet("QLabel { background-color : red; color : blue; }");
+    labelEndGame->setFont(font);
+    labelEndGame->setText("END GAME");
+    labelEndGame->setVisible(false);
     config->open_Config(&configFile);
     Record=configFile.record;
     /*for (int x=1;x< SIZE_AREA_X;x++) {
@@ -44,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->setStyleSheet("* { background-color: rgb(255,255,255,50) }");
     NextBlock=randomGenerat->generate()%18;
     CurBlock=NextBlock;
-    QFont font = ui->label->font();
+    font = ui->label->font();
     font.setPointSize(14);
     font.setBold(true);
     ui->label_2->setFont(font);
@@ -66,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->label_5->setGeometry(NEXT_LEFT,NEXT_TOP+NEXT_HEIGHT+120,100,20);
     ui->label_6->setGeometry(NEXT_LEFT,20,100,20);
     ui->label_7->setGeometry(NEXT_LEFT,50,100,20);
-
+    on_pushButton_6_clicked();
 }
 void MainWindow::paintEvent(QPaintEvent *e) {
 
@@ -75,7 +85,7 @@ void MainWindow::paintEvent(QPaintEvent *e) {
     Check_line();
     ui->label_2->setText(QString::number(points));
      ui->label_5->setText(QString::number(Speed));
-    for (int y=0;y<SIZE_AREA_Y;y++ ) {
+   for (int y=0;y<SIZE_AREA_Y;y++ ) {
         for (int x=0;x< SIZE_AREA_X;x++) {
             Square_without_margin(&qp,x,y, block->Area[y][x]);
             if (block->Area[y][x]!=Qt::white){
@@ -86,10 +96,7 @@ void MainWindow::paintEvent(QPaintEvent *e) {
 
     }
     if (endGame){
-        qDebug() << "endGame";
-        QLabel *labelEndGame = new QLabel(this);
-        labelEndGame->setGeometry(LEFT+WIDHT+100,TOP+HEIGHT-50,100,20);
-        labelEndGame->setText("END GAME");
+        labelEndGame->setVisible(true);
         timer->stop();
         return;
     }
@@ -376,6 +383,7 @@ void MainWindow::Check_line()
 }
 MainWindow::~MainWindow()
 {
+    on_pushButton_5_clicked();
     delete ui;
 }
 void MainWindow::keyPressEvent( QKeyEvent *event)
@@ -472,5 +480,30 @@ void MainWindow::on_pushButton_7_clicked()
     NextBlock=randomGenerat->generate()%18;
     timer->start(newTimer);
     endGame=false;
+    labelEndGame->setVisible(false);
+}
+
+//left
+void MainWindow::on_pushButton_2_clicked()
+{
+    key_state=block::LEFT_st;
+}
+
+//Right
+void MainWindow::on_pushButton_3_clicked()
+{
+   key_state=block::RIGHT_st;
+}
+
+//down
+void MainWindow::on_pushButton_clicked()
+{
+   key_state=block::DOWN_st;
+}
+
+//Rotate
+void MainWindow::on_pushButton_4_clicked()
+{
+   key_state=block::ENTER_st;
 }
 

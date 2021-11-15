@@ -55,6 +55,8 @@ public:
     bool J (QPainter *qp,uint16_t *y, state_t key_state,  angle_t rotate_s);
     bool L (QPainter *qp,uint16_t *y,  state_t key_state, angle_t rotate_s);
 
+    void endGame(QPainter *qp);
+
     void nextT (QPainter *qp,angle_t rotate_s);
     void nextQ (QPainter *qp);
     void nextI (QPainter *qp,angle_t rotate_s);
